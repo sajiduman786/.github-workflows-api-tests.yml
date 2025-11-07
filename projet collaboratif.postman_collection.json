@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "800ad891-bd9c-4534-9dff-7e6398927b40",
+		"name": "Projet collaboratif 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49499322",
+		"_collection_link": "https://sajid-uman786-3212099.postman.co/workspace/application-gestion-de-profil~6a493e2d-0d02-4197-8e48-0ee0830197eb/collection/49499322-800ad891-bd9c-4534-9dff-7e6398927b40?action=share&source=collection_link&creator=49499322"
+	},
+	"item": [
+		{
+			"name": "post item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Response has an ID\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"});\r",
+							"pm.test(\"Item has correct values\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const requestBody = JSON.parse(pm.request.body.raw);\r",
+							"    pm.expect(jsonData.name).to.eql(requestBody.name);\r",
+							"    pm.expect(jsonData.price).to.eql(requestBody.price);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"    const jsonitem = pm.response.json();\r",
+							"   pm.environment.set(\"item_id\", pm.response.json().id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"feuille verte\",\r\n    \"price\": 7\r\n}\r\n ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3005/items",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3005",
+					"path": [
+						"items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 201 OK\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Item has correct values\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"   \r",
+							"   pm.expect(jsonData.name);\r",
+							"    pm.expect(jsonData.price);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Each item has an ID\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    // Vérifie que la réponse est bien un tableau\r",
+							"    pm.expect(jsonData).to.be.an('array');\r",
+							"\r",
+							"    // Vérifie que chaque élément a un id\r",
+							"    jsonData.forEach(function(item) {\r",
+							"        pm.expect(item).to.have.property('id');\r",
+							"        pm.expect(item.id).to.be.a('number'); \r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3005/items",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3005",
+					"path": [
+						"items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "item id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"if (pm.response.code === 200) {\r",
+							"     pm.test(\"Status is 200 OK or 404 Not Found\", () => {\r",
+							"   pm.response.to.have.status(200);})\r",
+							"\r",
+							"\r",
+							"pm.test(\"Item ID matches\", () => {\r",
+							"    const response = pm.response.json();\r",
+							"    const expectedId = pm.variables.get(\"itemId\");\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Required fields exist\", () => {\r",
+							"    const item = pm.response.json();\r",
+							"    pm.expect(item).to.have.all.keys(\r",
+							"        'id', 'name', 'price'\r",
+							"    );\r",
+							"});\r",
+							"} else if (pm.response.code === 404) {\r",
+							"    pm.test(\"Returns 404 for invalid ID\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Error message is clear\", () => {\r",
+							"    const response = pm.response.json();\r",
+							"    pm.expect(response).to.have.property('error');\r",
+							"    pm.expect(response.error)\r",
+							"        .to.include('not found');\r",
+							"});\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3005/items/{{item_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3005",
+					"path": [
+						"items",
+						"{{item_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put item",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Cahier\",\r\n    \"price\": 15\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3005/items/{{item_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3005",
+					"path": [
+						"items",
+						"{{item_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete items",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3005/items/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3005",
+					"path": [
+						"items",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete all items",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3005/items",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3005",
+					"path": [
+						"items"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

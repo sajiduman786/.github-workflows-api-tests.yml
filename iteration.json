@@ -1,0 +1,18 @@
+[
+    {
+        "id":"{{item_id}}",
+        "name":"pinceau",
+        "price":"8"
+        
+    },
+    {
+         "id":"{{item_id}}",
+        "name":"colle",
+        "price":"15"
+    },
+    {
+         "id":"{{item_id}}",
+        "name":"stylo",
+        "price":"7"
+    }
+]
