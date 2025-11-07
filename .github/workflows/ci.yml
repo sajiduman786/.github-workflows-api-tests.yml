@@ -1,0 +1,52 @@
+name : Newman API Tests
+
+on:
+  push:
+    branches: ["main"]
+    
+
+
+jobs: 
+  run-api-tests:
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+    
+
+      - name: Installation de Node jobs
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Installation des librairies
+        run: npm install
+
+      - name: Lancement du serveur 
+        run: |
+          nohup node server.js > server.log 2>&1 & 
+          sleep 5
+
+      - name: Installation de newman + Html Extra reporter 
+        run: npm install -g newman newman-reporter-htmlextra
+
+      - name: Lancement de newman
+        run: |
+          newman run "./postman/projet collaboratif.postman_collection.json" \
+          -e "./postman/projet collaboratif.postman_environment.json" \
+          --iteration-data "./postman/iteration.json" \
+          -r htmlextra \
+          --reporter-htmlextra-export "./reports/RapportNewman.html"
+      - name: upload HTML test report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-test-report
+          path: reports/RapportNewman.html
+      - name: Add HTML report link
+        run: |
+          echo "### Rapport newman generé" >> $GITHUB_STEP_SUMMARY
+          echo "Telecharger le rapport depuis la section **Artifacts -> newman-test-report**" >> $GITHUB_STEP_SUMMARY
+
+    

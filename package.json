@@ -15,7 +15,8 @@
   "author": "Maximilian Schwarzmüller",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "nanoid": "^5.1.6"
   },
   "devDependencies": {
     "newman": "^6.2.1"
